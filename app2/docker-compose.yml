@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+  app2:
+    # hostname: app2 => or with networks aliases
+    image: containous/whoami
+    ports:
+      - 8082:80 # not used after proxy
+    networks:
+      web:
+        aliases:
+          - app2
+    labels:
+      - "traefik.enable=true"
+      # traefik.http.routers => creer une de routage http
+      # traefik.http.routers.<name> => name = nom de la règle
+      - "traefik.http.routers.app2.rule=PathPrefix(`/app2`)"
+      # Define middleware IP Whitelist
+      - "traefik.http.middlewares.app2-whitelist.ipwhitelist.sourcerange=78.124.119.169"
+      # Attach middleware 
+      - "traefik.http.routers.app2.middlewares=app2-whitelist"
+
+networks:
+  web:
+    external: true

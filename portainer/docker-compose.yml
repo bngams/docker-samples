@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+    portainer-ce:
+        # ports:
+        #     - '5009:9000'
+        #     - '9443:9443'
+        # container_name: portainer
+        restart: unless-stopped
+        volumes:
+            - '/var/run/docker.sock:/var/run/docker.sock'
+            - 'portainer_data:/data'
+        image: 'portainer/portainer-ce:latest'
+        networks:
+            - web
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+            - "traefik.http.routers.portainer.rule=Host(`portainer.docker`) && PathPrefix(`/portainer`)"
+            # - "traefik.http.routers.portainer.middlewares=portainer-replacepathregex"
+            # - "traefik.http.middlewares.portainer-replacepathregex.replacepathregex.regex=^/portainer/(.*)"
+            # - "traefik.http.middlewares.portainer-replacepathregex.replacepathregex.replacement=/$$1"
+            # or custom middleware
+            # - "traefik.http.routers.portainer.middlewares=main-whitelist"
+
+volumes:
+    portainer_data:
+
+networks:
+    web:
+        external: true
