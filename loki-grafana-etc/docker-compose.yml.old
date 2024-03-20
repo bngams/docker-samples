@@ -1,5 +1,10 @@
 version: '3.8'
 
+x-logging: &loki-logging
+  logging:
+    driver: loki
+    options:
+      loki-url: "http://loki:3100/loki/api/v1/push"
 
 services:
   nginx-app-promtail:
@@ -28,7 +33,15 @@ services:
       # labels traefik instead of ports....
 
   # dependency: plugin loki driver
-
+  nginx-app-lokidriver:    
+    <<: *loki-logging
+    container_name: nginx-app-lokidriver
+    image: nginx
+    ports:
+      - 8085:80
+    networks:
+      - obs
+      - web
   
   grafana:
     image: grafana/grafana:latest
