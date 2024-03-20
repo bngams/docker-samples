@@ -73,4 +73,4 @@ networks:
   obs:
     name: obs
   web:
-    name: web 
+    external: true
